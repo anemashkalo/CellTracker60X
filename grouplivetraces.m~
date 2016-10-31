@@ -1,4 +1,4 @@
-%% scripts to bin the signaling data: split traces based on the last time point signaling level for the same colony size
+%% split traces based on the last time point signaling level for the same colony size
 % Get means over time but separately for different colony sizes
 % new figure for each new colony size ( data drawn from multiple .mat
 % files)
@@ -10,24 +10,25 @@ trajmin = 20;%30
 tpt = 84;%100 81 99 83
 strdir = '*_40Xset2_BGan.mat';%outFebsetBGan
 ff = dir(strdir);%'*_60X_testparam_allT.mat'ff = dir('*60Xjan8_R*.mat');
+C = {'c','r'};
+q = 1;
+
+
+%nc = 1;                       % look at nc-cell colonies
+N = 20;  
 C1 = {'c','b','r'};% for colorcoding colony size ( if look at means of all nc-colonies
 signalbin = [];
 notbinned = [];
 errbin = [];
-signthresh =0.9; % look at all colonies of size nc
-
+signthresh =2; % look at all colonies of size nc
 clear traces
 clear traces_one
 clear traces_two
 clear traces_three
 clear a
 totalcol = zeros(6,1);
-C = {'c','r'};
-q = 1;
 
-nc = 1;                       % look at nc-cell colonies
-N = 20;  
-                    % how many last time point to average in order to sort into beans
+                     % how many last time point to average in order to sort into beans
 
 for k=1:length(ff)
     outfile = ff(k).name; %nms{k};
@@ -64,6 +65,8 @@ for k=1:length(ff)
                         disp(['filter trajectories below' num2str(trajmin)]);
                         disp(['use' num2str(length(nonzeros(dat)))]);
                         figure(jj), plot(dat,'-*','color',C{jj});hold on          % here plot the traces that met the condition
+                        figure(nc), plot(dat,'-*','color',C1{nc});hold on          % here plot the traces for specific colony size,no binning
+                        notbinned{nc}(:,q+sz-1) = dat; 
                         signalbin{jj}(:,q+sz-1) = dat;                            % here store the traces which meat condition
                         errbin{jj}(:,q+sz-1) = std(nonzeros(dat((end-N):end-1))); % here store the sd for traces that meat condition
                         
@@ -102,12 +105,12 @@ for k=1:length(ff)
     end                       % new segmentation
 end
 
- figure(1)
- ylim([0 2.5]);
- xlim([0 (tpt+10)]);
- ylabel('mean Nuc/Cyto smad4  ');
- xlabel('frames');
-                       
+                       figure(nc)
+                       ylim([0 2.5]);
+                       xlim([0 (tpt+10)]);
+                       ylabel('mean Nuc/Cyto smad4  ');
+                       xlabel('frames');
+  end                     
 %end
 % figure, plot(1:size(totalcol,1),totalcol,'r-*','markersize',18,'linewidth',3);
 % xlabel('cells per colony','fontsize',20);

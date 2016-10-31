@@ -46,7 +46,7 @@ box on
 h = figure(1);
 h.Children.FontSize = 18;
 legend(['cdx2 <' num2str(binSZ)],['cdx2 >' num2str(binSZ)]);
-title('<signaling> in matched uCol over last 15 tpt');
+title('<signaling> in matched 1cell uCol over last 15 tpt');
 yy = (0:0.5:yl);
 xx = ones(size(yy));
 figure(1), hold on
