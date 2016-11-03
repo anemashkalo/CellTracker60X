@@ -8,7 +8,7 @@ load('/Volumes/data2/Anastasiia/LiveCellImagingGFPs4RFPh2b/2016-07-07-LiveCellTi
 
 %dirlive = ('/Volumes/data2/Anastasiia/LiveCellImagingGFPs4RFPh2b/2016-10-29-LIVECELLanalysis/2016-10-17-new_outfiles_tiling1');
 
-dirlive = ('/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/2016-10-17-projections/new_outfiles_tiling1');%new_outfiles_tiling1anBG new_outfiles_tiling1
+dirlive = ('/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/2016-10-17-projections/new_outfiles_tiling1anBG');%new_outfiles_tiling1anBG new_outfiles_tiling1
 %t = imread('/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/testwithDAPI.tif');
 t = imread('/Volumes/data2/Anastasiia/LiveCellImagingGFPs4RFPh2b/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/testwithDAPI.tif');
 figure(1), imshow(t(:,:,1),[0 5e3]); hold on;
@@ -20,7 +20,7 @@ rotmat = mytform.T(1:2,1:2);
 
 colormap = prism;
 positions = (0:39);
-strdir = '_out.mat';% _out tile1BGan 
+strdir = '_tile1BGan.mat';% _out tile1BGan 
 last = 100;             % which time point in live dataset to check before matching
 
 q = 1;
@@ -62,5 +62,5 @@ for k=1:size(positions,2)
     
 end
 
-%save('registeredDAPInewTraces','datatogether','-append');
+%save('registeredDAPInewTraces_ANbg','datatogether');
 

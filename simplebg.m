@@ -4,7 +4,7 @@ if sum(sum(sum(Lcytofin))) == 0   % if there is no Lcytofin, make i an empty ima
     Lcytofin = zeros(size(Lnuc,1),size(Lnuc,2),size(Lnuc,3));
 end
 allmask = Lcytofin | Lnuc;
-allmask = imdilate(allmask,strel('disk',5));
+allmask = imdilate(allmask,strel('disk',1));
 
 %I2(I2>1700)=0; % make the junk also holes so it will be filled with local pixels as the cells themselves
 imgNoCells = I2;

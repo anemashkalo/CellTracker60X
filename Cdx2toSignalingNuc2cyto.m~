@@ -1,8 +1,8 @@
-%% Cdx2toSignaling 
+%% Cdx2toSignaling nuc:cyto 
 %close all
 %load('/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/registeredDAPInewTraces.mat');
 %load('/Volumes/data2/Anastasiia/LiveCellImagingGFPs4RFPh2b/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/registeredDAPInewTraces.mat');
-%load('/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/registeredDAPInewTraces.mat','datatogether');
+load('/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/registeredDAPInewTraces.mat','datatogether');
 % need to load the 'datatogether' var
 positions = (0:39);
 clear tracesbycol
@@ -28,8 +28,8 @@ for k=1:size(datatogether,2)   %  loop over colonies
         cdx2todapi(k) = datatogether(k).fixedData(:,3)/datatogether(k).fixedData(:,1); % get the value of cdx2dapi for this colony
         test = (cdx2todapi(k)<= binSZ(1));
         cdx2bins = test+1;
-        %traces{k} = datatogether(k).colony.NucSmadRatio;              % get the nuclea2smad ratio for all traces in this colony
-        traces{k} = datatogether(k).colony.NucOnlyData;
+        traces{k} = datatogether(k).colony.NucSmadRatio;              % get the nuclea2smad ratio for all traces in this colony
+        %traces{k} = datatogether(k).colony.NucOnlyData;
         traces{k}((traces{k} == 0)) = nan;                            % put nans instead of zeros, to avoid merging theminto consecutive time points and ahe plotting wrong
         for h = 1:size(traces{k},2)                                  % loop over traces
             [r,~] = find(isfinite(traces{k}(:,h)));                  %
@@ -58,7 +58,7 @@ cdx2bins = 2;
 C = {'r','c','m'};
 ucol = 2;  
 % clean the data
-exclude = [100 800];
+exclude = [0.4 1.5];
 for k=1:cdx2bins
     for h=1:ucol
         for ii=1:size(binneddata(k).traces{h},2)
@@ -87,19 +87,19 @@ for h=1:ucol
 for k=1:cdx2bins
     
     figure(h), plot(Cdx2{k}(:,h),'.-','color',C{k},'markersize',16);hold on
-    ylim([200 800])
+    ylim([0 2])
 end
 end
 % plot cdx2 values vs final signaling
 yy = (0:0.5:2);
-xx = 350*ones(size(yy));
-xx1 = (0:100:800);
+xx = ones(size(yy));
+xx1 = (0:0.5:2);
 yy1 = ones(size(xx1));
 for h=1:ucol
     for k=1:cdx2bins
         figure(h+2), plot(nonzeros(binneddata(k).finsign{h}),nonzeros(binneddata(k).cdx2{h}),'*','color',C{k},'Markersize',16);hold on
         ylim([0 2])
-        xlim([0 800])
+        xlim([0 2])
         
     end
     end
@@ -112,15 +112,15 @@ hold on,figure(4), plot(xx1,yy1,'k-')
 
 %histograms in cdx2 and signaling
 
-xbins1 = (exclude(1):100:exclude(2));
-xbins2 = (0:0.2:1.5);
+xbins1 = (exclude(1):0.2:exclude(2));
+xbins2 = (0:0.1:2);
 
-for h=1%:ucol
+for h=1:ucol
     for k=1:cdx2bins
-        figure(h+4), histogram(nonzeros(binneddata(k).finsign{h}),xbins1,'Normalization','pdf','FaceColor',C{k});
-        ylim([0 10])
+        figure(h+4), hist(nonzeros(binneddata(k).finsign{h}),xbins1,'normaization','pdf','FaceColor',C{k});
+        ylim([0 10]);legend(num2str())
         xlim([exclude(1) exclude(2)]);title('Signaling');
-        figure(h+6), histogram(nonzeros(binneddata(k).cdx2{h}),xbins2,'Normalization','pdf','FaceColor',C{k});
+        figure(h+6), hist(nonzeros(binneddata(k).cdx2{h}),xbins2,'normaization','pdf','FaceColor',C{k});
         
         ylim([0 10])
         xlim([0 2]);title('Cdx2');
