@@ -6,7 +6,7 @@
 % need to load the 'datatogether' var
 positions = (0:39);
 clear tracesbycol
-trajmin = 40; %
+trajmin = 30; %
 fr_stim = 16; % needed to check the colony size at this point
 traces = [];  % initialize
 cdx2todapi = [];

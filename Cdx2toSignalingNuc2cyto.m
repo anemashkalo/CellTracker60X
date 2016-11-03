@@ -2,11 +2,11 @@
 %close all
 %load('/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/registeredDAPInewTraces.mat');
 %load('/Volumes/data2/Anastasiia/LiveCellImagingGFPs4RFPh2b/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/registeredDAPInewTraces.mat');
-%load('/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/registeredDAPInewTraces.mat','datatogether');
+load('/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-07-LiveCellTiling_28hr10ngmlBMP4/registeredDAPInewTraces_ANbg2.mat','datatogether');
 % need to load the 'datatogether' var
 positions = (0:39);
 clear tracesbycol
-trajmin = 40; %
+trajmin = 30; %
 fr_stim = 16; % needed to check the colony size at this point
 traces = [];  % initialize
 cdx2todapi = [];
@@ -16,7 +16,7 @@ clear dat
 clear binneddata
 binneddata = struct;
 q = 1;
-N = 30;
+N = 20;
 clear test
 clear cdx2bins
 
@@ -58,7 +58,7 @@ cdx2bins = 2;
 C = {'r','c','m'};
 ucol = 2;  
 % clean the data
-exclude = [0.4 1.5];
+exclude = [0.3 1.5];
 for k=1:cdx2bins
     for h=1:ucol
         for ii=1:size(binneddata(k).traces{h},2)
@@ -87,47 +87,50 @@ for h=1:ucol
 for k=1:cdx2bins
     
     figure(h), plot(Cdx2{k}(:,h),'.-','color',C{k},'markersize',16);hold on
-    ylim([0 2])
+    ylim([exclude(1) exclude(2)])
+    figure(h),title([ ' Colonies of size' num2str(h) ]);
 end
 end
 % plot cdx2 values vs final signaling
-yy = (0:0.5:2);
-xx = ones(size(yy));
-xx1 = (0:0.5:2);
-yy1 = ones(size(xx1));
-for h=1:ucol
-    for k=1:cdx2bins
-        figure(h+2), plot(nonzeros(binneddata(k).finsign{h}),nonzeros(binneddata(k).cdx2{h}),'*','color',C{k},'Markersize',16);hold on
-        ylim([0 2])
-        xlim([0 2])
-        
-    end
-    end
-hold on,figure(3), plot(xx,yy,'k-')
-hold on,figure(3), plot(xx1,yy1,'k-')
-
-hold on,figure(4), plot(xx,yy,'k-')
-hold on,figure(4), plot(xx1,yy1,'k-')
-
+% yy = (0:0.5:2);
+% xx = ones(size(yy));
+% xx1 = (0:0.5:2);
+% yy1 = ones(size(xx1));
+% for h=1:ucol
+%     for k=1:cdx2bins
+%         figure(h+2), plot(nonzeros(binneddata(k).finsign{h}),nonzeros(binneddata(k).cdx2{h}),'*','color',C{k},'Markersize',16);hold on
+%         ylim([0 2])
+%         xlim([0 2])
+%         
+%     end
+%     end
+% hold on,figure(3), plot(xx,yy,'k-')
+% hold on,figure(3), plot(xx1,yy1,'k-')
+% hold on,figure(4), plot(xx,yy,'k-')
+% hold on,figure(4), plot(xx1,yy1,'k-')
 
 %histograms in cdx2 and signaling
 
 xbins1 = (0:0.1:1.5);
 xbins2 = (0:0.1:1.5);% 
 
-for h=1%:ucol
+for h=1
     for k=1:cdx2bins
         figure(h+4),subplot(1,2,k), histogram(nonzeros(binneddata(k).finsign{h}),xbins1,'Normalization','pdf','FaceColor','r');hold on
-        ylim([0 10]);title([ 'bin ' num2str(k) 'colSZ ' num2str(h) ]);hold on
-        xlim([exclude(1) exclude(2)]);title('Signaling');
+        histogram(nonzeros(binneddata(k).cdx2{h}),xbins2,'Normalization','pdf','FaceColor','c');legend('cdx2');
+        ylim([0 5]);title([ 'bin ' num2str(k) 'colSZ ' num2str(h) ]);legend('signaling');hold on
+        xlim([0 2]);
         
-        figure(h+6),subplot(1,2,k), histogram(nonzeros(binneddata(k).cdx2{h}),xbins2,'Normalization','pdf','FaceColor','c');hold on        
-        ylim([0 10]);legend([ 'bin ' num2str(k) 'colSZ ' num2str(h) ]);hold on
-        xlim([0 1.5]);title('Cdx2');
-        figure(h+8),histogram(nonzeros(binneddata(k).cdx2{h}),xbins2,'Normalization','pdf','FaceColor','g');hold on        
-        title('all cdx2');
-        figure(h+10),histogram(nonzeros(binneddata(k).finsign{h}),xbins1,'Normalization','pdf','FaceColor','m');hold on        
-        title('all signaling');
+    end
+end
+
+for h=1
+    for k=1:cdx2bins
+        figure(h+8), histogram(nonzeros(binneddata(k).finsign{h}),xbins1,'Normalization','pdf','FaceColor','r');hold on
+        histogram(nonzeros(binneddata(k).cdx2{h}),xbins2,'Normalization','pdf','FaceColor','c');legend('cdx2');
+        ylim([0 5]);title([ 'bin ' num2str(k) 'colSZ ' num2str(h) ]);legend('signaling');hold on
+        xlim([0 2]);
+        
     end
     
     

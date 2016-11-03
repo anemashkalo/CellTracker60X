@@ -37,6 +37,10 @@ toshift = 0;
 matchdist = 150;% 150
 shiftframe = 38;
 
+% jan8 data time group2 (20-37 ht window)
+direc1 ='/Users/warmflashlab/Desktop/JANYARY_8_DATA_ilasik/2016-11-03-jan8data_projections_tg2/nuc_projections_tg2';
+direc2 ='/Users/warmflashlab/Desktop/JANYARY_8_DATA_ilasik/2016-11-03-jan8data_projections_tg2/cyto_projections_tg2';
+
 %40X tiling2 data
 % direc1 ='/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-26-Tiling2_24hrtotalBMP410ngml/uColTiling2_20hrinBMP4_20160726_24717PM/nuc_projections';
 % direc2 = '/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-07-26-Tiling2_24hrtotalBMP410ngml/uColTiling2_20hrinBMP4_20160726_24717PM/cyto_projections';
@@ -54,49 +58,50 @@ shiftframe = 38;
 % direc2 = '/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/2016-10-20-pluriset/cyto_projections/';
 
 %Febset data
-direc1 ='/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/03-02-2016-uCol_diff_AF(83tptsusable)/nuc_projections';
-direc2 = '/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/03-02-2016-uCol_diff_AF(83tptsusable)/cyto_projections';
+% direc1 ='/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/03-02-2016-uCol_diff_AF(83tptsusable)/nuc_projections';
+% direc2 = '/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/03-02-2016-uCol_diff_AF(83tptsusable)/cyto_projections';
 
 ff1 = readAndorDirectory(direc1);% nuc
 ff2 = readAndorDirectory(direc2);% cyto
-discardarea =2200; % 1200 for the 60X data  900 for the 40X
+discardarea =2000; % 
 mag = 60;
 chan = [0,1];
 cellIntensity = 300;% for pluri   280 % does not matter, since the nuc masks are from ilastik
-cellIntensity1 = 200; % 380 for feb set bright, 200-300 for dim positions % for cyto pluri 180 % 300 for tiling 1; 220 for nov12 set % 300 for BMP4 only set % for tiling2 set:350
-for ii = 27;%1:length(ff1.p) 
+cellIntensity1 = 100; % % jan8set timegroup2 100 %380 for feb set bright, 200-300 for dim positions % for cyto pluri 180 % 260-300 for tiling 1; 220 for nov12 set % 300 for BMP4 only set % for tiling2 set:350
+tg = 2;
+for ii = 12%1:length(ff1.p) 
     disp(['Movie ' int2str(ff1.p(ii))]);
-    nucmoviefile = getAndorFileName(ff1,ff1.p(ii),0,0,0);   % nuc channel ( last function argument)
-    fmoviefile = getAndorFileName(ff2,ff2.p(ii),0,0,1);     % cyto channel
+    nucmoviefile = getAndorFileName(ff1,ff1.p(ii),2,0,0);   % nuc channel ( last function argument)
+    fmoviefile = getAndorFileName(ff2,ff2.p(ii),2,0,1);     % cyto channel
     [~, cmask, nuc_p, fimg_p] = simpleSegmentationLoop(nucmoviefile,fmoviefile,mag,cellIntensity,cellIntensity1);
     stmp = strsplit(nucmoviefile,direc1);
-    ifile = ['/Users/warmflashlab/Desktop/A_NEMASHKALO_Data_and_stuff/9_LiveCllImaging/03-02-2016-uCol_diff_AF(83tptsusable)/nuc_projections/' stmp{end}(2:(end-4)) '_{simplesegm}.h5'];%stmp{end-1}(2:end)
+    ifile = ['/Users/warmflashlab/Desktop/JANYARY_8_DATA_ilasik/2016-11-03-jan8data_projections_tg2/nuc_projections_tg2/' stmp{end}(2:(end-4)) '_{simplesegm}.h5'];%stmp{end-1}(2:end)
     nmask = readIlastikFile(ifile);
     nmask = cleanIlastikMasks(nmask,discardarea);% area filter last argument
     [newmasks, colonies] = statsArrayToSplitMasks(nmask,nuc_p,fimg_p,cmask,toshift,matchdist,shiftframe);
-    outfile = [int2str(ff1.p(ii)) '_outFebsetBGan2.mat'];
+    outfile = [int2str(ff1.p(ii)) '_jan8tg2.mat'];
     saveLiveCellData(outfile,newmasks,cmask,colonies);
 end
 %% plot cell trajectories
 trajmin =5;%10
 
-outfile = '28_outFebsetBGan.mat';% good positions, Feb set[0,1,3,4,5,7,8,9,10,12,14,18,21,22,24,26,27,28,29,31,32,33];
+outfile = '10_jan8tg2.mat';% good positions, Feb set[0,1,3,4,5,7,8,9,10,12,14,18,21,22,24,26,27,28,29,31,32,33];
 
 plotcelltraces(outfile,trajmin)
 
 %%
 N = 1;
-for k=30:39
-    figure(10), subplot(2,5,N),imshow(newmasks(:,:,k));
+for k=1:9
+    figure(12), subplot(2,5,N),imshow(newmasks(:,:,k));
     subplot(2,5,N),title(num2str(k))
-    figure(11), subplot(2,5,N),imshow(cmask(:,:,k));
-    subplot(2,5,N),title(num2str(k))
+%     figure(13), subplot(2,5,N),imshow(cmask(:,:,k));
+%     subplot(2,5,N),title(num2str(k))
 
     N = N+1;
 end
 
 %%
-r = regionprops(newmasks(:,:,20),'Area');
+r = regionprops(newmasks(:,:,10),'Area');
 r = cat(1,r.Area)
 
 
