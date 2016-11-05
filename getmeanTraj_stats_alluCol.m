@@ -2,12 +2,12 @@
 % Get means over time but separately for different colony sizes
 % data drawn from multiple .mat
 % 
-fr_stim = 16;          % 22(jan8data)   % 38 nov12data        %16 feb set          16 (july7 data)    (fr_stim = 13) july 26 data
+fr_stim = 16;          % 22(jan8data)   % 38 nov12data        %16 feb set          16 (july7 data)    (fr_stim = 13) july 26 data 
 delta_t = 17;          % 12 min         % 5 minutes           15min                17min              (17min)
 p = fr_stim*delta_t/60;
 trajmin =30; % tiling1 set: 30, jan8 set: 40 febset: 20 
 tpt =100;
-strdir = '*_outTiling1BGan2.mat';%_outFebsetBGan2   %_outTiling1BGan2  % out
+strdir = '*_outTiling1BGan2.mat';%_outFebsetBGan2   %_outTiling1BGan2  % out % _jan8tg2
 ff = dir(strdir);
 C = {'b','g','r','m','k'};
 colormap = prism;
@@ -19,6 +19,9 @@ totalcol = zeros(10,1);
 q = 1;
 ucol = 3;% up to which size colonies to look at
 N = 20;
+exclude = [0.3 1.5];% tiling1 set:[0.3 1.5];% jan set: [0.4 2] % feb set: [0.4 1.9]
+startpoint = 4;
+
    
 for k=1:length(ff)
     outfile = ff(k).name;
@@ -66,16 +69,19 @@ for k=1:length(ff)
 end                       % new segmentation
     
  %% average those trajectories get error and plot ho many colonies were found and mean signaling
-C = {'c','b','r'};
+ 
+load('dynamicSigndata_40x_tiling1','notbinned','lastT','N','fr_stim','delta_t','tpt','trajmin','totalcol','exclude','startpoint');
+ C = {'c','b','r'};
+ucol = 3;
 colormap = prism;
 tpt = tpt-1;
 vect = (1:tpt)';
 ucolmean = zeros(tpt,ucol);
 ucolerr= zeros(tpt,ucol);
 
-startpoint = 4;
+% startpoint = 4;
 lastmean = zeros(tpt,ucol);
-exclude = [0.3 1.5];% tiling1 set:[0.3 1.5];% jan set: [0.4 2] % feb set: [0.4 1.9]
+% exclude = [0.4 2];% tiling1 set:[0.3 1.5];% jan set: [0.4 2] % feb set: [0.4 1.9]
 for j =1:3%size(notbinned,2)% loop over colony sizes;
     for k=1:(size(notbinned{j},1)-1)
         for ii = 1:(size(notbinned{j},2))
@@ -116,27 +122,7 @@ for k=1:ucol
        xlim([exclude(1)  exclude(2)]);
 end 
 
-%% plot dynamic histograms
-%xbins = (0:0.1:2);
-colormap = prism; 
-colormap2 = cat(1,colormap,colormap);% to have enough colors for all time points
-q=1;
-n = 20;% interval between the time points to put on the histogram
-for j =1                               % loop over colony sizes;
-    nn = round((size(notbinned{j},1)-1)/n); % get the number of subplots, based on size of data and and interval chosen
-    for k=1:n:(size(notbinned{j},1)-1)      % k here represents time points
-        %
-        figure(8+j),subplot(1,nn+1,q),histogram(nonzeros(notbinned{j}(k,:)),xbins,'Normalization','pdf','FaceColor',colormap2(k,:));legend(['colSZ' num2str(j) ]);hold on;
-       
-        t = (k*delta_t)/60;
-        tolabel(q) = round(t);
-        ylim([0 5.5]);
-        xlim([0 2]);
-        figure(8+j),subplot(1,nn+1,q),title([ num2str(tolabel(q)) ' hours']);ylabel('frequency');xlabel('nuc:cyto')
-        q = q+1;
-    end
-    
-end
+
 %% get dynamic fractions
 colormap = colorcube; 
 colormap2 = cat(1,colormap,colormap);% to have enough colors for all time points
@@ -147,7 +133,7 @@ clear q
 q = 1;
 tolabel = [];
 sym = {'*','.','x'};
-for j =1                   % loop over colony sizes;
+for j =2                  % loop over colony sizes;
     fractions(j).allcells = [];
     fractions(j).cellsabove = [];
     fractions(j).cellsbelow = [];

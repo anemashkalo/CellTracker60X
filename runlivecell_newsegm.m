@@ -69,7 +69,7 @@ chan = [0,1];
 cellIntensity = 300;% for pluri   280 % does not matter, since the nuc masks are from ilastik
 cellIntensity1 = 100; % % jan8set timegroup2 100 %380 for feb set bright, 200-300 for dim positions % for cyto pluri 180 % 260-300 for tiling 1; 220 for nov12 set % 300 for BMP4 only set % for tiling2 set:350
 tg = 2;
-for ii = 18:length(ff1.p) 
+for ii = 30:length(ff1.p) 
     disp(['Movie ' int2str(ff1.p(ii))]);
     nucmoviefile = getAndorFileName(ff1,ff1.p(ii),2,0,0);   % nuc channel ( last function argument)
     fmoviefile = getAndorFileName(ff2,ff2.p(ii),2,0,1);     % cyto channel
@@ -83,9 +83,9 @@ for ii = 18:length(ff1.p)
     saveLiveCellData(outfile,newmasks,cmask,colonies);
 end
 %% plot cell trajectories
-trajmin =5;%10
+trajmin =10;%10
 
-outfile = '16_jan8tg2.mat';% good positions, Feb set[0,1,3,4,5,7,8,9,10,12,14,18,21,22,24,26,27,28,29,31,32,33];
+outfile = '31_jan8tg2.mat';% good positions, Feb set[0,1,3,4,5,7,8,9,10,12,14,18,21,22,24,26,27,28,29,31,32,33];
 
 plotcelltraces(outfile,trajmin)
 
