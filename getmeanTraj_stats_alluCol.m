@@ -2,18 +2,20 @@
 % Get means over time but separately for different colony sizes
 % data drawn from multiple .mat
 % 
-fr_stim = 16;          % 22(jan8data)   % 38 nov12data        %16 feb set          16 (july7 data)    (fr_stim = 13) july 26 data 
-delta_t = 17;          % 12 min         % 5 minutes           15min                17min              (17min)
+fr_stim = 22;          % 22(jan8data)   % 38 nov12data        %16 feb set          16 (july7 data)    (fr_stim = 13) july 26 data 
+delta_t = 12;          % 12 min         % 5 minutes           15min                17min              (17min)
 p = fr_stim*delta_t/60;
-trajmin =30; % tiling1 set: 30, jan8 set: 40 febset: 20 
-tpt =100;
-strdir = '*_outTiling1BGan2.mat';%_outFebsetBGan2   %_outTiling1BGan2  % out % _jan8tg2
+trajmin =40; % tiling1 set: 30, jan8 set: 40 febset: 20 
+tpt =99;
+strdir = '*_out.mat';%_outFebsetBGan2   %_outTiling1BGan2  % out % _jan8tg2
 ff = dir(strdir);
 C = {'b','g','r','m','k'};
 colormap = prism;
 signalbin = [];
 notbinned = [];
 lastT = [];
+midT = [];
+earlyT = [];
 clear traces
 totalcol = zeros(10,1);
 q = 1;
@@ -49,7 +51,12 @@ for k=1:length(ff)
                 [r,~] = find(isfinite(traces{j}(:,h)));                  %
                 dat = zeros(tpt,1);
                 dat(r,1) = traces{j}(r,h);
-                s = mean(nonzeros(dat(end-N:(end-1))));                        % take the mean of the last chunk of N time points
+                s = mean(nonzeros(dat(end-N:(end-1)))); 
+                e = mean(nonzeros(dat(1:fr_stim_col))); 
+                m = mean(nonzeros(dat(fr_stim_col+10:fr_stim_col+10+30))); 
+                
+                
+                % take the mean of the last chunk of N time points
                 if length(nonzeros(dat))>trajmin                                %FILTER OUT SHORT TRAJECTORIES
                     disp(['filter trajectories below' num2str(trajmin)]);
                     disp(['use' num2str(length(nonzeros(dat)))]);
@@ -58,11 +65,14 @@ for k=1:length(ff)
                     figure(nc), ylim([0 2]);
                     %errnotbinned{nc}(:,q+size(dat,2)-1) = std(nonzeros(dat(end-N:(end-1))));  % here store the sd for traces that meat condition
                     lastT{nc}(:,q+size(dat,2)-1) = s;
+                    midT{nc}(:,q+size(dat,2)-1) = m;
+                    earlyT{nc}(:,q+size(dat,2)-1) = e;
+                    
                     % disp(q+sz-1)
                 end
                 
             end
-            q = q+size(dat,20);
+            q = q+size(dat,2);
             
         end
     end

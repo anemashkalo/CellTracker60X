@@ -85,7 +85,7 @@ end
 %% plot cell trajectories
 trajmin =10;%10
 
-outfile = '31_jan8tg2.mat';% good positions, Feb set[0,1,3,4,5,7,8,9,10,12,14,18,21,22,24,26,27,28,29,31,32,33];
+outfile = '9_outFebsetBGan2.mat';% good positions, Feb set[0,1,3,4,5,7,8,9,10,12,14,18,21,22,24,26,27,28,29,31,32,33];
 
 plotcelltraces(outfile,trajmin)
 
